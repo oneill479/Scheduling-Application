@@ -22,18 +22,18 @@ import java.util.List;
 
 public class Appointment {
     private static ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
-    public static void addAppointment(Appointment newAppointment) {
+    public static void addNewAppointment(Appointment newAppointment) {
         allAppointments.add(newAppointment);
     };
 
     private int id, customerId, userId;
-    private String title, description, location, contact, type;
+    private String title, description, location, contact, type, customerName;
     private Timestamp start, end;
     private LocalDateTime startLocal, endLocal;
 
     // constructor
     public Appointment(int id, String title, String description, String location, String contact, String type,
-                       Timestamp start, Timestamp end, int customerId, int userId) {
+                       Timestamp start, Timestamp end, int customerId, int userId, String customerName) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -46,6 +46,7 @@ public class Appointment {
         this.userId = userId;
         this.start = start;
         this.end = end;
+        this.customerName = customerName;
 
         // set local times for display in table
         startLocal = start.toLocalDateTime();
@@ -105,6 +106,11 @@ public class Appointment {
      * @return appointment end time
      */
     public int getUserId() { return userId; }
+
+    /**
+     * @return customer name
+     */
+    public String getCustomerName() { return customerName; }
 
     /**
      * @return appointment customer id
@@ -199,6 +205,11 @@ public class Appointment {
     public void setCustomerId(int customerId) {  this.customerId = customerId; }
 
     /**
+     * @param customerName customer name
+     */
+    public void setCustomerId(String customerName) {  this.customerName = customerName; }
+
+    /**
      * @param userId appointment user id
      */
     public void setEndTime(int userId) { this.userId = userId; }
@@ -223,6 +234,23 @@ public class Appointment {
         List<String> ampm = Arrays.asList("AM", "PM");
         ObservableList<String> choices = FXCollections.observableList(ampm);
         return choices;
+    }
+
+    /**
+     * This method deletes an appointment
+     * @param selectedAppointment the appointment that will be deleted
+     * @return returns true if the appointment was successfully deleted, otherwise returns false
+     */
+    public static boolean deleteAppointment(Appointment selectedAppointment) {
+        try {
+            int selection = allAppointments.indexOf(selectedAppointment);
+            allAppointments.remove(selection);
+            return true;
+        }
+        catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
     }
 
 

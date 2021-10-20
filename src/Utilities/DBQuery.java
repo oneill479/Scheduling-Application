@@ -192,7 +192,6 @@ public class DBQuery {
                 String appointmentType = rs.getString("Type");
                 Timestamp appointmentStart = rs.getTimestamp("Start");
                 Timestamp appointmentEnd = rs.getTimestamp("End");
-                int appointmentCustomerId = rs.getInt("Customer_ID");
                 int appointmentUserId = rs.getInt("User_ID");
 
                 // get contact id's to find contact names
@@ -209,10 +208,24 @@ public class DBQuery {
                     }
                 }
 
-                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, appointmentContactName,
-                        appointmentType, appointmentStart, appointmentEnd, appointmentCustomerId, appointmentUserId);
+                // get customer id's to find customer names
+                int appointmentCustomerId = rs.getInt("Customer_ID");
+                String appointmentCustomerName = "";
 
-                addAppointment(appointment);
+                ObservableList<Customer> customerList = getAllCustomers();
+
+                // find first level division name
+                for (Customer customer : customerList) {
+                    if (appointmentCustomerId == customer.getId()) {
+                        appointmentCustomerName = customer.getName();
+                        break;
+                    }
+                }
+
+                Appointment appointment = new Appointment(appointmentId, appointmentTitle, appointmentDescription, appointmentLocation, appointmentContactName,
+                        appointmentType, appointmentStart, appointmentEnd, appointmentCustomerId, appointmentUserId, appointmentCustomerName);
+
+                addNewAppointment(appointment);
 
             }
         }

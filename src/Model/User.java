@@ -29,6 +29,14 @@ public class User {
      */
     public String getUserName() { return userName; }
 
+    /**
+     * This method gets a list of all the customer data
+     * @return returns an observable list of customer data
+     */
+    public static ObservableList<User> getCurrentUser() {
+        return currentUser;
+    }
+
 
     // SETTERS //
 

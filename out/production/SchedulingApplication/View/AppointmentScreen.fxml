@@ -53,7 +53,7 @@
    <Label layoutX="382.0" layoutY="192.0" text="Location" />
    <Label layoutX="90.0" layoutY="322.0" />
    <Label layoutX="382.0" layoutY="243.0" text="Type" />
-   <Button layoutX="759.0" layoutY="291.0" mnemonicParsing="false" onAction="#addAppointment" text="Add Appointment">
+   <Button fx:id="addAppointmentButton" layoutX="759.0" layoutY="291.0" mnemonicParsing="false" onAction="#addAppointment" text="Add Appointment">
       <font>
          <Font name="System Bold" size="12.0" />
       </font></Button>
@@ -85,8 +85,13 @@
    <Spinner fx:id="endMinute" layoutX="891.0" layoutY="231.0" prefHeight="25.0" prefWidth="61.0" />
    <ComboBox fx:id="fieldCustomer" layoutX="145.0" layoutY="291.0" prefWidth="150.0" />
    <Label layoutX="38.0" layoutY="295.0" text="Customer Name" />
-   <Label fx:id="contactIdLabel" layoutX="305.0" layoutY="295.0" text="ID" visible="false">
+   <Label fx:id="customerIdLabel" layoutX="305.0" layoutY="295.0" text="ID" visible="false">
       <font>
          <Font name="System Bold" size="11.0" />
       </font></Label>
+   <Label fx:id="contactIdLabel" layoutX="305.0" layoutY="139.0" text="ID" visible="false">
+      <font>
+         <Font name="System Bold" size="11.0" />
+      </font>
+   </Label>
 </AnchorPane>

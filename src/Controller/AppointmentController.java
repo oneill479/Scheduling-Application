@@ -26,6 +26,8 @@ import java.util.*;
 import static Model.Appointment.*;
 import static Model.Contact.*;
 import static Model.Customer.*;
+import static Model.User.getCurrentUser;
+import static Utilities.AppointmentDB.*;
 
 public class AppointmentController implements Initializable {
 
@@ -37,17 +39,21 @@ public class AppointmentController implements Initializable {
     public TextField fieldLocation;
     public TextField fieldType;
     public DatePicker fieldDate;
-    public Button cancelButton;
     public Spinner startHour;
     public Spinner startMinute;
     public Spinner endHour;
     public Spinner endMinute;
+    public Label customerIdLabel;
     public Label contactIdLabel;
+    public Button addAppointmentButton;
+    public Button cancelButton;
 
-    private int id, customer, user;
+    private int id, contactID, customerID, userId;
+    private String contactName, customerName;
     private String title, description, location, type;
     private String sHr, sMin, eHr, eMin;
-    private Timestamp startDateTime, endDateTime;
+    private Timestamp startTimestamp, endTimestamp;
+    private Date updateDate;
 
     public TableView appointmentTable;
     public TableColumn appointmentId;
@@ -67,6 +73,10 @@ public class AppointmentController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // get user name
+        ObservableList<User> currentUser = getCurrentUser();
+        userId = currentUser.get(0).getUserId();
 
         id = getRandomAppointmentId();
         fieldId.setText(String.valueOf(id));
@@ -105,16 +115,32 @@ public class AppointmentController implements Initializable {
             customers.add(customer.getName());
         }
 
-        fieldCustomer.setOnAction(e -> {
+        fieldContact.setOnAction(e -> {
 
-            for (Customer customer : customerList) {
-                if (fieldCustomer.getSelectionModel().getSelectedItem() == customer.getName()) {
-                    contactIdLabel.setText("ID-" + customer.getId());
+            for (Contact contact : contactsList) {
+                if (fieldContact.getSelectionModel().getSelectedItem() == contact.getName()) {
+                    contactName = contact.getName();
+                    contactIdLabel.setText("ID-" + contact.getId());
+                    contactID = contact.getId();
                     break;
                 }
             }
 
             contactIdLabel.setVisible(true);
+        });
+
+        fieldCustomer.setOnAction(e -> {
+
+            for (Customer customer : customerList) {
+                if (fieldCustomer.getSelectionModel().getSelectedItem() == customer.getName()) {
+                    customerName = customer.getName();
+                    customerIdLabel.setText("ID-" + customer.getId());
+                    customerID = customer.getId();
+                    break;
+                }
+            }
+
+            customerIdLabel.setVisible(true);
         });
 
         // set hours
@@ -128,11 +154,6 @@ public class AppointmentController implements Initializable {
         Spinner endM = new Spinner(getMinutes());
         startMinute.setValueFactory(startM.getValueFactory());
         endMinute.setValueFactory(endM.getValueFactory());
-
-        // am and pm
-       // startAmPm.setItems(getAmPm());
-        //startAmPm.
-       // endAmPm.setItems(getAmPm());
 
     }
 
@@ -171,7 +192,7 @@ public class AppointmentController implements Initializable {
 
     public void addAppointment(ActionEvent actionEvent) throws IOException, ParseException {
         StringBuilder error = new StringBuilder();
-        String textError = checkTextInputs(fieldContact, fieldTitle, fieldDescription, fieldLocation, fieldType);
+        String textError = checkTextInputs(fieldContact, fieldTitle, fieldCustomer, fieldDescription, fieldLocation, fieldType);
 
         sHr = startHour.getValue().toString();
         sMin = startMinute.getValue().toString();
@@ -181,28 +202,79 @@ public class AppointmentController implements Initializable {
         String timeError = checkTimeInputs(sHr, sMin, eHr, eMin);
 
         if (textError.isEmpty() && timeError.isEmpty()) {
+
             title = fieldTitle.getText();
             description = fieldDescription.getText();
             location = fieldLocation.getText();
             type = fieldType.getText();
 
-            // after save go back to main screen
-            toMain(actionEvent);
+            Appointment appointment = new Appointment(id, title, description, location, contactName, type, startTimestamp, endTimestamp, customerID, userId, customerName);
+
+            addNewAppointment(appointment);
+
+            insertAppointmentDB(id, title, description, location, type, startTimestamp, endTimestamp, customerID, contactID);
+
+            // show success message
+            JOptionPane.showMessageDialog(null, "Appointment successfully added!", "Appointments", JOptionPane.INFORMATION_MESSAGE);
+            refreshPage(actionEvent);
 
         }
         else {
             error.append(textError);
             error.append(timeError);
             // show error string to user
-            JOptionPane.showMessageDialog(null, error.toString());
+            JOptionPane.showMessageDialog(null, error.toString(), "Appointments", JOptionPane.ERROR_MESSAGE);
         }
 
     }
 
     public void updateAppointment(ActionEvent actionEvent) {
+        cancelButton.setDisable(false);
+        addAppointmentButton.setText("Update Appointment");
+
+        Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
+
+        fieldContact.getSelectionModel().select(selectedAppointment.getContact());
+        fieldId.setText(String.valueOf(selectedAppointment.getId()));
+        fieldTitle.setText(selectedAppointment.getTitle());
+        fieldCustomer.getSelectionModel().select(selectedAppointment.getCustomerName());
+        fieldDescription.setText(selectedAppointment.getDescription());
+        fieldLocation.setText(selectedAppointment.getLocation());
+        fieldType.setText(selectedAppointment.getType());
+        fieldDate.setValue(selectedAppointment.getStart().toLocalDateTime().toLocalDate());
+
+        String sHour = selectedAppointment.getStartLocal().toLocalTime().toString().substring(0, 2);
+        String sMinute = selectedAppointment.getStartLocal().toLocalTime().toString().substring(3, 5);
+        String eHour = selectedAppointment.getEndLocal().toLocalTime().toString().substring(0, 2);
+        String eMinute = selectedAppointment.getEndLocal().toLocalTime().toString().substring(3, 5);
+
+        startHour.getValueFactory().setValue(sHour);
+        startMinute.getValueFactory().setValue(sMinute);
+        endHour.getValueFactory().setValue(eHour);
+        endMinute.getValueFactory().setValue(eMinute);
+
     }
 
     public void deleteAppointment(ActionEvent actionEvent) {
+
+        Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
+        if(selectedAppointment == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Delete Appointments");
+            alert.setContentText("You must select an appointment!");
+            alert.showAndWait();
+            return;
+        };
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this appointment?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            deleteAppointmentDB(selectedAppointment.getId());
+            Model.Appointment.deleteAppointment(selectedAppointment);
+            appointments.remove(selectedAppointment);
+            appointmentTable.setItems(getAllAppointments());
+        }
     }
 
     public void weekView(ActionEvent actionEvent) {
@@ -211,17 +283,32 @@ public class AppointmentController implements Initializable {
     public void monthView(ActionEvent actionEvent) {
     }
 
-    public void cancelUpdate(ActionEvent actionEvent) {
+    public void cancelUpdate(ActionEvent actionEvent) throws IOException {
+        refreshPage(actionEvent);
     }
 
-    public static String checkTextInputs(ComboBox contact, TextField title, TextField description, TextField location, TextField type) {
+    public void refreshPage (ActionEvent actionEvent) throws IOException {
+        // reset appointment screen
+        Parent root = FXMLLoader.load(getClass().getResource("../View/AppointmentScreen.fxml"));
+        Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setTitle("Appointments");
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    public static String checkTextInputs(ComboBox contact, TextField title, ComboBox customer, TextField description, TextField location, TextField type) {
         StringBuilder errorBuild = new StringBuilder();
         String error;
 
-        // title check
+        // contact check
         if (contact.getSelectionModel().isEmpty()) { errorBuild.append("You must select a contact!\n"); }
         // title check
         if (title.getText().isEmpty()) { errorBuild.append("Title cannot be empty!\n"); }
+        // customer name check
+        if (customer.getSelectionModel().isEmpty()) { errorBuild.append("You must select a contact!\n"); }
         // description check
         if (description.getText().isEmpty()) errorBuild.append("Description cannot be empty!\n");
         // location check
@@ -243,16 +330,16 @@ public class AppointmentController implements Initializable {
         String date, startTime, endTime, error;
         String aptEarly, aptLate;
 
-//        // set date formats and convert standard time to military time
-//        SimpleDateFormat military = new SimpleDateFormat("HH:mm");
-//        SimpleDateFormat standard = new SimpleDateFormat("hh:mm a");
-//        Date startParsed = standard.parse(startHour + ":" + startMinute + " " + startAmPm);
-//        Date endParsed = standard.parse(endHour + ":" + endMinute + " " + endAmPm);
-//        String startMil = military.format(startParsed);
-//        String endMil = military.format(endParsed);
-
         // set up strings for dates and times
-        date = fieldDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        try {
+            date = fieldDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
+        catch (Exception e) {
+            errorBuild.append("Please select a date from calendar!\n");
+            error = errorBuild.toString();
+            return error;
+        }
+
         startTime = " " + startHour + ":" + startMinute + ":00";
         endTime = " " + endHour + ":" + endMinute + ":00";
 
@@ -329,6 +416,9 @@ public class AppointmentController implements Initializable {
             }
 
         }
+
+        startTimestamp = Timestamp.valueOf(startDateTime);
+        endTimestamp = Timestamp.valueOf(endDateTime);
 
         error = errorBuild.toString();
         return error;
