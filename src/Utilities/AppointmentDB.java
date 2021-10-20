@@ -63,10 +63,68 @@ public class AppointmentDB {
         }
     }
 
+    public static void updateAppointmentDB(int id, String title, String description, String location, String type, Timestamp start, Timestamp end,
+                                           int customerId, int contactId) {
+
+        // create INSERT prepared statement
+        String preparedStatement = "UPDATE appointments " +
+                "SET Title = ?, " +
+                "Description = ?, " +
+                "Location = ?, " +
+                "Type = ?, " +
+                "Start = ?, " +
+                "End = ?, " +
+                "Last_Update = ?, " +
+                "Last_Updated_By = ?, " +
+                "Customer_ID = ?, " +
+                "User_ID = ?, " +
+                "Contact_ID = ? " +
+                "WHERE Appointment_ID = ?"; // INSERT statement
+
+        // get current timestamp in utc time
+        LocalDateTime currentTime = LocalDateTime.now();
+        Timestamp currentTimeStamp = Timestamp.valueOf(currentTime);
+
+        // get user name
+        ObservableList<User> currentUser = getCurrentUser();
+        String userName = currentUser.get(0).getUserName();
+        int userId = currentUser.get(0).getUserId();
+
+        try {
+            DBQuery.setPreparedStatement(JDBC.connection, preparedStatement);
+            PreparedStatement ps = DBQuery.getPreparedStatement();
+
+            ps.setString(1, title);
+            ps.setString(2, description);
+            ps.setString(3, location);
+            ps.setString(4, type);
+            ps.setTimestamp(5, start);
+            ps.setTimestamp(6, end);
+            ps.setTimestamp(7, currentTimeStamp);
+            ps.setString(8, userName);
+            ps.setInt(9, customerId);
+            ps.setInt(10, userId);
+            ps.setInt(11, contactId);
+            ps.setInt(12, id);
+
+            System.out.println(ps);
+
+            ps.execute();
+
+            if (ps.getUpdateCount() > 0) {
+                System.out.println(ps.getUpdateCount() + " row(s) affected!");
+            }
+
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public static void deleteAppointmentDB(int id) {
 
         // create DELETE prepared statement
-        String preparedStatement = "DELETE FROM appointments WHERE Appointment_ID = ?"; // INSERT statement
+        String preparedStatement = "DELETE FROM appointments WHERE Appointment_ID = ?"; // DELETE statement
 
         try {
             DBQuery.setPreparedStatement(JDBC.connection, preparedStatement);

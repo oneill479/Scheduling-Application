@@ -253,5 +253,14 @@ public class Appointment {
         }
     }
 
+    /**
+     * This method updates an appointment
+     * @param index the index of the appointment
+     * @param updatedAppointment the appointment that will be updated
+     */
+    public static void updateAppointment(int index, Appointment updatedAppointment) {
+        allAppointments.set(index, updatedAppointment);
+    }
+
 
 }

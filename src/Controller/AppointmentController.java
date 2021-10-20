@@ -48,11 +48,14 @@ public class AppointmentController implements Initializable {
     public Button addAppointmentButton;
     public Button cancelButton;
 
+    Appointment selectedAppointment;
+
     private int id, contactID, customerID, userId;
     private String contactName, customerName;
     private String title, description, location, type;
     private String sHr, sMin, eHr, eMin;
     private Timestamp startTimestamp, endTimestamp;
+    private boolean update = false;
     private Date updateDate;
 
     public TableView appointmentTable;
@@ -208,15 +211,28 @@ public class AppointmentController implements Initializable {
             location = fieldLocation.getText();
             type = fieldType.getText();
 
-            Appointment appointment = new Appointment(id, title, description, location, contactName, type, startTimestamp, endTimestamp, customerID, userId, customerName);
+            if (update) {
+                Appointment updateAppointment = new Appointment(Integer.parseInt(fieldId.getText()), title, description, location, contactName, type, startTimestamp, endTimestamp, customerID, userId, customerName);
+                updateAppointment(getAllAppointments().indexOf(selectedAppointment), updateAppointment);
+            }
+            else {
+                Appointment newAppointment = new Appointment(id, title, description, location, contactName, type, startTimestamp, endTimestamp, customerID, userId, customerName);
+                addNewAppointment(newAppointment);
+            }
 
-            addNewAppointment(appointment);
-
-            insertAppointmentDB(id, title, description, location, type, startTimestamp, endTimestamp, customerID, contactID);
+            if (update) updateAppointmentDB(Integer.parseInt(fieldId.getText()), title, description, location, type, startTimestamp, endTimestamp, customerID, contactID);
+            else insertAppointmentDB(id, title, description, location, type, startTimestamp, endTimestamp, customerID, contactID);
 
             // show success message
-            JOptionPane.showMessageDialog(null, "Appointment successfully added!", "Appointments", JOptionPane.INFORMATION_MESSAGE);
+            if (update) {
+                JOptionPane.showMessageDialog(null, "Appointment successfully updated!", "Appointments", JOptionPane.INFORMATION_MESSAGE);
+            }
+            else {
+                JOptionPane.showMessageDialog(null, "Appointment successfully added!", "Appointments", JOptionPane.INFORMATION_MESSAGE);
+            }
+            // refresh the page
             refreshPage(actionEvent);
+
 
         }
         else {
@@ -228,11 +244,12 @@ public class AppointmentController implements Initializable {
 
     }
 
-    public void updateAppointment(ActionEvent actionEvent) {
+    public void updateSelectedAppointment(ActionEvent actionEvent) {
+        update = true;
         cancelButton.setDisable(false);
         addAppointmentButton.setText("Update Appointment");
 
-        Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
+        selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
 
         fieldContact.getSelectionModel().select(selectedAppointment.getContact());
         fieldId.setText(String.valueOf(selectedAppointment.getId()));
@@ -362,15 +379,12 @@ public class AppointmentController implements Initializable {
         // get time zones
         ZoneId currentZone = ZoneId.systemDefault();
         ZoneId ESTZone = ZoneId.of("America/New_York");
-        ZoneId UTCZone = ZoneOffset.UTC;
 
         ZonedDateTime currentStart = startDateTime.atZone(currentZone);
         LocalDateTime startEST = currentStart.withZoneSameInstant(ESTZone).toLocalDateTime();
-        LocalDateTime startUTC = currentStart.withZoneSameInstant(UTCZone).toLocalDateTime();
 
         ZonedDateTime currentEnd = endDateTime.atZone(currentZone);
         LocalDateTime endEST = currentEnd.withZoneSameInstant(ESTZone).toLocalDateTime();
-        LocalDateTime endUTC = currentEnd.withZoneSameInstant(UTCZone).toLocalDateTime();
 
         ZonedDateTime earlyLocal = earlyDateTime.atZone(ESTZone);
         LocalTime earlyTimeLocal = earlyLocal.withZoneSameInstant(currentZone).toLocalTime();
@@ -397,22 +411,44 @@ public class AppointmentController implements Initializable {
         }
 
         ObservableList<Appointment> appointmentList = getAllAppointments();
-        String overlap = "Appointment times cannot overlap current appointments!\n";
+        String overlap = "Appointment times cannot overlap with the same customer!\n";
 
         for (Appointment appointment : appointmentList) {
-            if (startEST.isBefore(appointment.getStartEST())) {
-                if (endEST.isAfter(appointment.getStartEST()) && endEST.isBefore(appointment.getEndEST())) {
+
+            // if you are updating an appointment skip this one
+            if (appointment.getId() == selectedAppointment.getId()) continue;
+
+            // check to see if customers appointments overlap
+            if (customerID == appointment.getCustomerId()) {
+
+                // check if start time is the same
+                if (startEST.isEqual(appointment.getStartEST())) {
                     errorBuild.append(overlap);
                     break;
                 }
-                if (endEST.isAfter(appointment.getEndEST())) {
+                // check if end time is the same
+                if (endEST.isEqual(appointment.getEndEST())) {
                     errorBuild.append(overlap);
                     break;
                 }
-            }
-            else if (startEST.isAfter(appointment.getStartEST()) && startEST.isBefore(appointment.getEndEST())) {
-                errorBuild.append(overlap);
-                break;
+                if (startEST.isBefore(appointment.getStartEST())) {
+                    // check if time is before and ends during another appointment
+                    if (endEST.isAfter(appointment.getStartEST()) && endEST.isBefore(appointment.getEndEST())) {
+                        errorBuild.append(overlap);
+                        break;
+                    }
+                    //check if time starts before and ends after another appointment
+                    if (endEST.isAfter(appointment.getEndEST())) {
+                        errorBuild.append(overlap);
+                        break;
+                    }
+                }
+                if (startEST.isAfter(appointment.getStartEST()) && startEST.isBefore(appointment.getEndEST())) {
+                    errorBuild.append(overlap);
+                    System.out.println(4);
+                    break;
+                }
+
             }
 
         }
