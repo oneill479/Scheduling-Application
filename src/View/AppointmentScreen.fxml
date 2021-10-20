@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="644.0" prefWidth="1043.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.AppointmentController">
+   <ComboBox fx:id="fieldContact" layoutX="144.0" layoutY="134.0" prefWidth="150.0" />
+   <Label layoutX="38.0" layoutY="138.0" text="Contact Name" />
+   <TableView fx:id="appointmentTable" layoutX="26.0" layoutY="390.0" prefHeight="200.0" prefWidth="991.0">
+      <columns>
+         <TableColumn fx:id="appointmentId" prefWidth="95.0" text="Appointment ID" />
+         <TableColumn fx:id="appointmentTitle" prefWidth="62.0" text="Title" />
+         <TableColumn fx:id="appointmentDescription" prefWidth="101.0" text="Description" />
+         <TableColumn fx:id="appointmentLocation" prefWidth="74.0" text="Location" />
+         <TableColumn fx:id="appointmentContact" prefWidth="74.0" text="Contact" />
+         <TableColumn fx:id="appointmentType" prefWidth="107.0" text="Type" />
+         <TableColumn fx:id="appointmentStart" prefWidth="133.0" text="Start Date/Time" />
+         <TableColumn fx:id="appointmentEnd" prefWidth="150.0" text="End Date/Time" />
+         <TableColumn fx:id="appointmentCustomer" prefWidth="96.0" text="Customer ID" />
+         <TableColumn fx:id="appointmentUser" prefWidth="91.0" text="User ID" />
+      </columns>
+   </TableView>
+   <TextField fx:id="fieldId" disable="true" layoutX="145.0" layoutY="188.0" text="DISABLED" />
+   <Label layoutX="38.0" layoutY="192.0" text="Appointment ID" />
+   <TextField fx:id="fieldTitle" layoutX="145.0" layoutY="239.0" />
+   <TextField fx:id="fieldDescription" layoutX="468.0" layoutY="134.0" />
+   <TextField fx:id="fieldLocation" layoutX="468.0" layoutY="189.0" />
+   <TextField fx:id="fieldType" layoutX="468.0" layoutY="239.0" />
+   <DatePicker fx:id="fieldDate" layoutX="783.0" layoutY="134.0" />
+   <Button layoutX="377.0" layoutY="605.0" mnemonicParsing="false" onAction="#updateAppointment" text="Update Appointment">
+      <font>
+         <Font name="System Bold" size="12.0" />
+      </font></Button>
+   <Button layoutX="555.0" layoutY="605.0" mnemonicParsing="false" onAction="#deleteAppointment" text="Delete Appointment">
+      <font>
+         <Font name="System Bold" size="12.0" />
+      </font></Button>
+   <Button layoutX="952.0" layoutY="605.0" mnemonicParsing="false" onAction="#toMain" text="Main Menu">
+      <font>
+         <Font name="System Bold Italic" size="12.0" />
+      </font></Button>
+   <RadioButton layoutX="406.0" layoutY="341.0" mnemonicParsing="false" onAction="#weekView" text="Week View">
+      <font>
+         <Font name="System Italic" size="12.0" />
+      </font></RadioButton>
+   <RadioButton layoutX="555.0" layoutY="341.0" mnemonicParsing="false" onAction="#monthView" text="Month View">
+      <font>
+         <Font name="System Italic" size="12.0" />
+      </font></RadioButton>
+   <Label layoutX="38.0" layoutY="251.0" text="Title" />
+   <Label layoutX="382.0" layoutY="138.0" text="Description" />
+   <Label layoutX="382.0" layoutY="192.0" text="Location" />
+   <Label layoutX="90.0" layoutY="322.0" />
+   <Label layoutX="382.0" layoutY="243.0" text="Type" />
+   <Button layoutX="759.0" layoutY="291.0" mnemonicParsing="false" onAction="#addAppointment" text="Add Appointment">
+      <font>
+         <Font name="System Bold" size="12.0" />
+      </font></Button>
+   <Button fx:id="cancelButton" disable="true" layoutX="905.0" layoutY="291.0" mnemonicParsing="false" onAction="#cancelUpdate" text="Cancel">
+      <font>
+         <Font name="System Bold" size="12.0" />
+      </font></Button>
+   <Label layoutX="720.0" layoutY="138.0" text="Date" />
+   <Label layoutX="427.0" layoutY="31.0" text="APPOINTMENTS">
+      <font>
+         <Font name="SansSerif Regular" size="24.0" />
+      </font>
+   </Label>
+   <Label layoutX="718.0" layoutY="193.0" text="Start Time" />
+   <Spinner fx:id="startHour" layoutX="788.0" layoutY="188.0" prefHeight="25.0" prefWidth="61.0" />
+   <Spinner fx:id="startMinute" layoutX="891.0" layoutY="188.0" prefHeight="25.0" prefWidth="61.0" />
+   <Label layoutX="868.0" layoutY="188.0" text=":">
+      <font>
+         <Font name="System Bold" size="18.0" />
+      </font>
+   </Label>
+   <Label layoutX="718.0" layoutY="235.0" text="End Time" />
+   <Spinner fx:id="endHour" layoutX="788.0" layoutY="231.0" prefHeight="25.0" prefWidth="61.0" />
+   <Label layoutX="868.0" layoutY="226.0" text=":">
+      <font>
+         <Font name="System Bold" size="18.0" />
+      </font>
+   </Label>
+   <Spinner fx:id="endMinute" layoutX="891.0" layoutY="231.0" prefHeight="25.0" prefWidth="61.0" />
+   <ComboBox fx:id="fieldCustomer" layoutX="145.0" layoutY="291.0" prefWidth="150.0" />
+   <Label layoutX="38.0" layoutY="295.0" text="Customer Name" />
+   <Label fx:id="contactIdLabel" layoutX="305.0" layoutY="295.0" text="ID" visible="false">
+      <font>
+         <Font name="System Bold" size="11.0" />
+      </font></Label>
+</AnchorPane>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="299.0" prefWidth="412.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.LoginController">
+   <TextField fx:id="userName" layoutX="114.0" layoutY="97.0" prefHeight="36.0" prefWidth="193.0" />
+   <PasswordField fx:id="userPassword" layoutX="114.0" layoutY="144.0" prefHeight="36.0" prefWidth="193.0" />
+   <Button fx:id="loginButton" defaultButton="true" layoutX="170.0" layoutY="206.0" mnemonicParsing="false" onAction="#login" prefHeight="46.0" prefWidth="73.0" text="LOGIN">
+      <font>
+         <Font name="System Bold" size="10.0" />
+      </font></Button>
+   <Label fx:id="userLabel" layoutX="29.0" layoutY="107.0" text="User ID">
+      <font>
+         <Font size="13.0" />
+      </font></Label>
+   <Label fx:id="passwordLabel" layoutX="29.0" layoutY="153.0" text="Password">
+      <font>
+         <Font size="13.0" />
+      </font></Label>
+   <Button fx:id="exitButton" layoutX="369.0" layoutY="271.0" mnemonicParsing="false" onAction="#exit" text="Exit">
+      <font>
+         <Font name="System Italic" size="12.0" />
+      </font></Button>
+   <Label fx:id="titleLabel" layoutX="85.0" layoutY="37.0" text="SCHEDULING APPLICATION">
+      <font>
+         <Font name="SansSerif Regular" size="18.0" />
+      </font></Label>
+   <Label fx:id="locationId" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="275.0" text="_" textAlignment="CENTER">
+      <font>
+         <Font name="System Italic" size="12.0" />
+      </font></Label>
+   <Label layoutX="159.0" layoutY="218.0" />
+</AnchorPane>
