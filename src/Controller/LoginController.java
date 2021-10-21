@@ -198,16 +198,6 @@ public class LoginController implements Initializable {
         return error;
     }
 
-//    public void createLoginFile() {
-//        File loginFile = new File ("login_activity.txt");
-//            if (loginFile.exists()) {
-//                System.out.println("Login file already exists!");
-//            }
-//            else (loginFile.createNewFile()) {
-//                System.out.println("New login file created!");
-//            }
-//    }
-
     public void writeLoginFile(String attempt) {
         LocalDateTime currentTime = LocalDateTime.now();
 

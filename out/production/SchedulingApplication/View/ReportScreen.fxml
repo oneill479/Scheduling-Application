@@ -1,14 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="Controller.ReportController"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="681.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.ReportController">
+    <ChoiceBox fx:id="contactBox" layoutX="333.0" layoutY="317.0" prefWidth="150.0" />
+    <TableView fx:id="contactTable" layoutX="50.0" layoutY="365.0" prefHeight="272.0" prefWidth="712.0">
+      <columns>
+          <TableColumn fx:id="aptIdColumn" prefWidth="56.0" text="Apt ID" />
+          <TableColumn fx:id="titleColumn" prefWidth="130.0" text="Title" />
+          <TableColumn fx:id="typeColumn" prefWidth="79.0" text="Type" />
+          <TableColumn fx:id="descriptionColumn" prefWidth="133.0" text="Description" />
+          <TableColumn fx:id="startColumn" prefWidth="114.0" text="Start" />
+          <TableColumn fx:id="endColumn" prefWidth="113.0" text="End" />
+          <TableColumn fx:id="customerIdColumn" prefWidth="86.0" text="Customer ID" />
+      </columns>
+    </TableView>
+    <Label layoutX="377.0" layoutY="296.0" text="CONTACT">
+        <font>
+          <Font name="SansSerif Bold" size="12.0" />
+        </font>
+    </Label>
+    <Label layoutX="331.0" layoutY="82.0" text="Total Appointments By Type">
+        <font>
+          <Font name="SansSerif Regular" size="12.0" />
+        </font>
+    </Label>
+    <ChoiceBox fx:id="typeBox" layoutX="333.0" layoutY="110.0" prefWidth="150.0" />
+    <Label layoutX="587.0" layoutY="82.0" text="Total Appointments By Month">
+        <font>
+          <Font name="SansSerif Regular" size="12.0" />
+        </font>
+    </Label>
+    <ChoiceBox fx:id="monthBox" layoutX="591.0" layoutY="110.0" prefWidth="150.0" />
+    <Label layoutX="348.0" layoutY="14.0" text="REPORTS">
+        <font>
+          <Font name="SansSerif Regular" size="24.0" />
+        </font>
+    </Label>
+    <TextField fx:id="typeField" alignment="CENTER" editable="false" layoutX="375.0" layoutY="150.0" prefHeight="25.0" prefWidth="63.0">
+      <font>
+         <Font name="SansSerif Bold" size="12.0" />
+      </font></TextField>
+    <TextField fx:id="monthField" alignment="CENTER" editable="false" layoutX="635.0" layoutY="150.0" prefHeight="25.0" prefWidth="63.0">
+      <font>
+         <Font name="SansSerif Bold" size="12.0" />
+      </font></TextField>
+    <Label layoutX="48.0" layoutY="91.0" text="Total Customers">
+        <font>
+          <Font name="SansSerif Italic" size="12.0" />
+        </font>
+    </Label>
+    <TextField fx:id="totalCustomersField" alignment="CENTER" editable="false" layoutX="160.0" layoutY="86.0" prefHeight="25.0" prefWidth="63.0">
+      <font>
+         <Font name="SansSerif Bold" size="12.0" />
+      </font></TextField>
+    <Label layoutX="48.0" layoutY="131.0" text="Total Appointments">
+        <font>
+          <Font name="SansSerif Italic" size="12.0" />
+        </font>
+    </Label>
+    <TextField fx:id="totalAppointmentsField" alignment="CENTER" editable="false" layoutX="160.0" layoutY="126.0" prefHeight="25.0" prefWidth="63.0">
+      <font>
+         <Font name="SansSerif Bold" size="12.0" />
+      </font></TextField>
+    <PieChart fx:id="countryPieChart" layoutX="48.0" layoutY="198.0" prefHeight="121.0" prefWidth="138.0" />
+    <Label layoutX="83.0" layoutY="182.0" text="Customers By Country">
+        <font>
+          <Font name="SansSerif Regular" size="13.0" />
+        </font>
+    </Label>
+   <Button layoutX="723.0" layoutY="647.0" mnemonicParsing="false" onAction="#toMain" text="Main Menu">
+      <font>
+         <Font name="System Bold Italic" size="12.0" />
+      </font></Button>
 </AnchorPane>
