@@ -5,13 +5,16 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="601.0" prefWidth="872.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.CustomerController">
-    <TextField fx:id="fieldName" layoutX="219.0" layoutY="221.0" />
+    <TextField fx:id="fieldNameFirst" layoutX="219.0" layoutY="221.0" prefHeight="25.0" prefWidth="64.0" promptText="First" />
     <Label layoutX="85.0" layoutY="225.0" text="Name" />
-    <TextField fx:id="fieldAddress" layoutX="219.0" layoutY="147.0" />
+    <TextField fx:id="fieldAddressNum" layoutX="219.0" layoutY="147.0" prefHeight="25.0" prefWidth="79.0" promptText="Street Number">
+      <font>
+         <Font size="10.0" />
+      </font></TextField>
     <Label layoutX="85.0" layoutY="151.0" text="Address" />
-    <TextField fx:id="fieldPostalCode" layoutX="219.0" layoutY="257.0" />
+    <TextField fx:id="fieldPostalCode" layoutX="219.0" layoutY="257.0" prefHeight="25.0" prefWidth="53.0" promptText="26810" />
     <Label layoutX="85.0" layoutY="261.0" text="Postal Code" />
-    <TextField fx:id="fieldPhoneNumber" layoutX="219.0" layoutY="184.0" />
+    <TextField fx:id="fieldPhone" layoutX="219.0" layoutY="184.0" prefHeight="25.0" prefWidth="149.0" promptText="999-999-9999" />
     <Label layoutX="85.0" layoutY="188.0" text="Phone Number" />
     <ComboBox fx:id="fieldCountry" layoutX="510.0" layoutY="117.0" prefHeight="25.0" prefWidth="183.0" />
     <TextField fx:id="fieldId" disable="true" layoutX="219.0" layoutY="104.0" text="AUTO GENERATED" />
@@ -19,7 +22,7 @@
     <Label layoutX="553.0" layoutY="180.0" text="First-level Division" />
     <ComboBox fx:id="fieldFLD" disable="true" layoutX="510.0" layoutY="209.0" prefHeight="25.0" prefWidth="183.0" promptText="FIRST SELECT COUNTRY" />
     <Label layoutX="579.0" layoutY="96.0" text="Country" />
-    <Button layoutX="525.0" layoutY="273.0" mnemonicParsing="false" onAction="#addCustomer" text="Add Customer">
+    <Button fx:id="addCustomerButton" layoutX="525.0" layoutY="273.0" mnemonicParsing="false" onAction="#addCustomer" text="Add Customer">
         <font>
           <Font name="System Bold" size="12.0" />
         </font>
@@ -44,19 +47,24 @@
           <TableColumn fx:id="customerFLD" prefWidth="131.0" text="First-level Division" />
       </columns>
     </TableView>
-   <Button layoutX="326.0" layoutY="554.0" mnemonicParsing="false" onAction="#editCustomer" text="Edit Customer">
+   <Button layoutX="313.0" layoutY="554.0" mnemonicParsing="false" onAction="#updateSelectedCustomer" text="Update Customer">
       <font>
          <Font name="System Bold" size="12.0" />
       </font>
    </Button>
-   <Button layoutX="449.0" layoutY="554.0" mnemonicParsing="false" onAction="#deleteCustomer" text="Delete Customer">
+   <Button layoutX="449.0" layoutY="554.0" mnemonicParsing="false" onAction="#deleteSelectedCustomer" text="Delete Customer">
       <font>
          <Font name="System Bold" size="12.0" />
       </font>
    </Button>
-   <Button fx:id="cancelButton" disable="true" layoutX="631.0" layoutY="273.0" mnemonicParsing="false" onAction="#cancel" text="Cancel">
+   <Button fx:id="cancelButton" disable="true" layoutX="631.0" layoutY="273.0" mnemonicParsing="false" onAction="#cancelUpdate" text="Cancel">
       <font>
          <Font name="System Bold" size="12.0" />
       </font>
    </Button>
+   <TextField fx:id="fieldAddressStreet" layoutX="308.0" layoutY="147.0" prefHeight="25.0" prefWidth="116.0" promptText="Street Name">
+      <font>
+         <Font size="10.0" />
+      </font></TextField>
+   <TextField fx:id="fieldNameLast" layoutX="303.0" layoutY="221.0" prefHeight="25.0" prefWidth="67.0" promptText="Last" />
 </AnchorPane>
