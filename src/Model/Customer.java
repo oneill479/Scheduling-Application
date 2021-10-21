@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 public class Customer {
 
     private static ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
-    public static void addCustomer(Customer newCustomer) {
+    public static void addNewCustomer(Customer newCustomer) {
         allCustomers.add(newCustomer);
     };
 
@@ -122,5 +122,34 @@ public class Customer {
      * @param firstLevelDivision customer first level division
      */
     public void setFirstLevelDivision(String firstLevelDivision) { this.firstLevelDivision = firstLevelDivision; }
+
+
+    // SPECIAL FUNCTIONS //
+
+    /**
+     * This method updates a customer
+     * @param index the index of the customer
+     * @param updatedCustomer the customer that will be updated
+     */
+    public static void updateCustomer(int index, Customer updatedCustomer) {
+        allCustomers.set(index, updatedCustomer);
+    }
+
+    /**
+     * This method deletes a customer
+     * @param selectedCustomer the customer that will be deleted
+     * @return returns true if the customer was successfully deleted, otherwise returns false
+     */
+    public static boolean deleteCustomer(Customer selectedCustomer) {
+        try {
+            int selection = allCustomers.indexOf(selectedCustomer);
+            allCustomers.remove(selection);
+            return true;
+        }
+        catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+    }
 
 }

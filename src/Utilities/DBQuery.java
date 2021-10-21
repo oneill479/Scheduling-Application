@@ -4,7 +4,6 @@ import Model.*;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 
 import static Model.Country.*;
 import static Model.FirstLevelDivision.*;
@@ -130,9 +129,9 @@ public class DBQuery {
                     }
                 }
 
-                Customer customer = new Customer(id, name, address, postalCode, phoneNumber, divisionName, countryName);
+                Customer customer = new Customer(id, name, address, postalCode, phoneNumber, countryName, divisionName);
 
-                addCustomer(customer);
+                addNewCustomer(customer);
 
 
             }

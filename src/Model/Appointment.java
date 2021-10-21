@@ -7,7 +7,6 @@ package Model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -215,7 +214,7 @@ public class Appointment {
     public void setEndTime(int userId) { this.userId = userId; }
 
 
-    // Special functions
+    // SPECIAL FUNCTIONS //
 
     public static ObservableList<String> getHours() {
         List<String> hours = Arrays.asList("06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",

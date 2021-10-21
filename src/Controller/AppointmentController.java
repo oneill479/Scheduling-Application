@@ -245,6 +245,17 @@ public class AppointmentController implements Initializable {
     }
 
     public void updateSelectedAppointment(ActionEvent actionEvent) {
+
+        selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
+        if(selectedAppointment == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Update Appointment");
+            alert.setContentText("You must select an appointment!");
+            alert.showAndWait();
+            selectedAppointment = null;
+            return;
+        };
+
         update = true;
         cancelButton.setDisable(false);
         addAppointmentButton.setText("Update Appointment");
@@ -274,10 +285,10 @@ public class AppointmentController implements Initializable {
 
     public void deleteAppointment(ActionEvent actionEvent) {
 
-        Appointment selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
+        selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
         if(selectedAppointment == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Delete Appointments");
+            alert.setTitle("Delete Appointment");
             alert.setContentText("You must select an appointment!");
             alert.showAndWait();
             return;
@@ -292,6 +303,11 @@ public class AppointmentController implements Initializable {
             appointments.remove(selectedAppointment);
             appointmentTable.setItems(getAllAppointments());
         }
+
+        JOptionPane.showMessageDialog(null, "Appointment successfully deleted!", "Customers", JOptionPane.INFORMATION_MESSAGE);
+
+        // set selected appointment back to null
+        selectedAppointment = null;
     }
 
     public void weekView(ActionEvent actionEvent) {
@@ -416,7 +432,9 @@ public class AppointmentController implements Initializable {
         for (Appointment appointment : appointmentList) {
 
             // if you are updating an appointment skip this one
-            if (appointment.getId() == selectedAppointment.getId()) continue;
+            if (selectedAppointment != null) {
+                if (appointment.getId() == selectedAppointment.getId()) continue;
+            }
 
             // check to see if customers appointments overlap
             if (customerID == appointment.getCustomerId()) {

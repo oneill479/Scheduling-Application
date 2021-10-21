@@ -17,24 +17,26 @@ import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-import static Model.Appointment.*;
 import static Model.Customer.*;
 import static Model.Country.*;
+import static Model.Appointment.*;
 import static Model.FirstLevelDivision.*;
-import static Utilities.AppointmentDB.insertAppointmentDB;
-import static Utilities.AppointmentDB.updateAppointmentDB;
+import static Utilities.AppointmentDB.deleteAppointmentDB;
+import static Utilities.CustomerDB.*;
 
 public class CustomerController implements Initializable {
 
     public Button cancelButton;
     public Button addCustomerButton;
-    private int id, postalCode, phoneNumber;
-    private String name, address;
+    private int id;
+    private String name, address, postalCode, phoneNumber;
     private String country, firstLevelDivision;
     boolean update;
+    int divisionId;
 
     Customer selectedCustomer;
 
@@ -51,6 +53,7 @@ public class CustomerController implements Initializable {
     public TextField fieldNameLast;
     public TextField fieldAddressNum;
     public TextField fieldAddressStreet;
+    public TextField fieldAddressCity;
     public TextField fieldPhone;
     public TextField fieldPostalCode;
     public TextField fieldId;
@@ -111,6 +114,7 @@ public class CustomerController implements Initializable {
             // if country id matches add first level division
             for (FirstLevelDivision division : getAllDivisions()) {
                 if (division.getCountryId() == countryId)
+                    divisionId = division.getId();
                     divisions.add(division.getName());
             }
         });
@@ -136,62 +140,78 @@ public class CustomerController implements Initializable {
 
     public void addCustomer(ActionEvent actionEvent) throws IOException, ParseException {
         StringBuilder error = new StringBuilder();
-        String textError = checkInputs(fieldAddressNum, fieldAddressStreet, fieldPhone, fieldNameFirst, fieldNameLast,
+        String textError = checkInputs(fieldAddressNum, fieldAddressStreet, fieldAddressCity, fieldPhone, fieldNameFirst, fieldNameLast,
                 fieldPostalCode, fieldCountry, fieldFLD);
 
         if (textError.isEmpty()) {
 
+              id = Integer.parseInt(fieldId.getText());
+              name = fieldNameFirst.getText() + " " + fieldNameLast.getText();
+              address = fieldAddressNum.getText() + " " + fieldAddressStreet.getText() + ", " + fieldAddressCity.getText();
+              postalCode = fieldPostalCode.getText();
+              phoneNumber = fieldPhone.getText();
+              country = fieldCountry.getSelectionModel().getSelectedItem().toString();
+              firstLevelDivision = fieldFLD.getSelectionModel().getSelectedItem().toString();
 
+            if (update) {
+                Customer updateCustomer = new Customer(Integer.parseInt(fieldId.getText()), name, address, postalCode, phoneNumber, country, firstLevelDivision);
+                updateCustomer(getAllCustomers().indexOf(selectedCustomer), updateCustomer);
+            }
+            else {
+                Customer newCustomer = new Customer(id, name, address, postalCode, phoneNumber, country, firstLevelDivision);
+                addNewCustomer(newCustomer);
+            }
 
-//            if (update) {
-//                Appointment updateAppointment = new Appointment(Integer.parseInt(fieldId.getText()), title, description, location, contactName, type, startTimestamp, endTimestamp, customerID, userId, customerName);
-//                updateAppointment(getAllAppointments().indexOf(selectedAppointment), updateAppointment);
-//            }
-//            else {
-//                Appointment newAppointment = new Appointment(id, title, description, location, contactName, type, startTimestamp, endTimestamp, customerID, userId, customerName);
-//                addNewAppointment(newAppointment);
-//            }
-//
-//            if (update) updateAppointmentDB(Integer.parseInt(fieldId.getText()), title, description, location, type, startTimestamp, endTimestamp, customerID, contactID);
-//            else insertAppointmentDB(id, title, description, location, type, startTimestamp, endTimestamp, customerID, contactID);
-//
-//            // show success message
-//            if (update) {
-//                JOptionPane.showMessageDialog(null, "Appointment successfully updated!", "Appointments", JOptionPane.INFORMATION_MESSAGE);
-//            }
-//            else {
-//                JOptionPane.showMessageDialog(null, "Appointment successfully added!", "Appointments", JOptionPane.INFORMATION_MESSAGE);
-//            }
-//            // refresh the page
-//            refreshPage(actionEvent);
+            if (update) updateCustomerDB(Integer.parseInt(fieldId.getText()), name, address, postalCode, phoneNumber, divisionId);
+            else insertCustomer(id, name, address, postalCode, phoneNumber, divisionId);
+
+            // show success message
+            if (update) {
+                JOptionPane.showMessageDialog(null, "Customer successfully updated!", "Customers", JOptionPane.INFORMATION_MESSAGE);
+            }
+            else {
+                JOptionPane.showMessageDialog(null, "Customer successfully added!", "Customers", JOptionPane.INFORMATION_MESSAGE);
+            }
+            // refresh the page
+            refreshPage(actionEvent);
 
 
         }
         else {
             error.append(textError);
             // show error string to user
-            JOptionPane.showMessageDialog(null, error.toString(), "Appointments", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, error.toString(), "Customers", JOptionPane.ERROR_MESSAGE);
         }
 
     }
 
     public void updateSelectedCustomer(ActionEvent actionEvent) {
+
+        selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
+        if(selectedCustomer == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Update Customer");
+            alert.setContentText("You must select a customer!");
+            alert.showAndWait();
+            return;
+        };
+
         update = true;
         cancelButton.setDisable(false);
         addCustomerButton.setText("Update Customer");
 
-        selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
-
-        String [] address = selectedCustomer.getAddress().split(" ", 0);
-        String [] name = selectedCustomer.getName().split(" ", 0);
-
-        System.out.println(address[0]);
-        System.out.println(address[1]);
-        System.out.println(name[0]);
-        System.out.println(name[1]);
+        String [] address = selectedCustomer.getAddress().split(" ", 2);
+        String [] addressNameCity = address[1].split(",", 2);
+        String [] name = selectedCustomer.getName().split(" ", 2);
 
         String addressNum = address[0];
-        String addressName = address [1];
+        String addressName = addressNameCity [0];
+        try {
+            String addressCity = addressNameCity [1];
+            fieldAddressCity.setText(addressCity);
+        }
+        catch (Exception e) {System.out.println("No City Name");}
+
         String phoneNumber = String.valueOf(selectedCustomer.getPhoneNumber());
         String firstName = name[0];
         String lastName = name[1];
@@ -229,6 +249,79 @@ public class CustomerController implements Initializable {
     }
 
     public void deleteSelectedCustomer(ActionEvent actionEvent) {
+
+        selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
+        if(selectedCustomer == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Delete Customer");
+            alert.setContentText("You must select a customer!");
+            alert.showAndWait();
+            return;
+        };
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this customer?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+
+            int appointmentNum = 0;
+
+            for (Appointment appointment : getAllAppointments()) {
+                if (selectedCustomer.getId() == appointment.getCustomerId()) {
+                    appointmentNum++;
+                }
+            }
+
+            if (appointmentNum == 0) {
+                for (Appointment appointment : getAllAppointments()) {
+                    if (selectedCustomer.getId() == appointment.getCustomerId()) {
+                        deleteAppointmentDB(appointment.getId());
+                        Model.Appointment.deleteAppointment(appointment);
+                    }
+                }
+
+                // delete customer
+                deleteCustomerDB(selectedCustomer.getId());
+                deleteCustomer(selectedCustomer);
+                customers.remove(selectedCustomer);
+                customerTable.setItems(getAllCustomers());
+
+                JOptionPane.showMessageDialog(null, "Customer successfully deleted!", "Customers", JOptionPane.INFORMATION_MESSAGE);
+            }
+            else {
+                Alert appointmentAlert = new Alert(Alert.AlertType.CONFIRMATION, "This customer has " + appointmentNum + " appointment(s).\n" +
+                        "You must delete any appointment(s) before deleting the customer. \nWould you like to delete any appointment(s) now?", ButtonType.YES, ButtonType.NO);
+
+                Optional<ButtonType> appointmentResult = appointmentAlert.showAndWait();
+
+                if (appointmentResult.isPresent() && appointmentResult.get() == ButtonType.YES) {
+
+                    ObservableList<Appointment> appointmentList = getAllAppointments();
+
+                    for (Appointment appointment : appointmentList) {
+                        if (selectedCustomer.getId() == appointment.getCustomerId()) {
+                            deleteAppointmentDB(appointment.getId());
+                            deleteAppointment(appointment);
+                        }
+                        if (appointmentList.size() == 0) { break; }
+                    }
+
+                    // delete customer
+                    deleteCustomerDB(selectedCustomer.getId());
+                    deleteCustomer(selectedCustomer);
+                    customers.remove(selectedCustomer);
+                    customerTable.setItems(getAllCustomers());
+
+                    JOptionPane.showMessageDialog(null, "Customer successfully deleted!", "Customers", JOptionPane.INFORMATION_MESSAGE);
+
+                }
+            }
+
+        }
+
+        // set selected customer back to null
+        selectedCustomer = null;
+
     }
 
     public void refreshPage (ActionEvent actionEvent) throws IOException {
@@ -264,10 +357,10 @@ public class CustomerController implements Initializable {
      * @return returns true if there are only digits, otherwise returns false
      */
     public static boolean isInteger(String text) {
-        int num;
+        long num;
 
         try {
-            num = Integer.parseInt(text);
+            num = Long.parseLong(text);
             return true;
         }
         catch (NumberFormatException e) {
@@ -296,28 +389,31 @@ public class CustomerController implements Initializable {
 
     }
 
-    public static String checkInputs(TextField addressNum, TextField addressStreet, TextField phoneNumber, TextField nameFirst, TextField nameLast, TextField postalCode, ComboBox country, ComboBox division) {
+    public static String checkInputs(TextField addressNum, TextField addressStreet, TextField addressCity, TextField phoneNumber, TextField nameFirst, TextField nameLast, TextField postalCode, ComboBox country, ComboBox division) {
         StringBuilder errorBuild = new StringBuilder();
         String error;
 
         // address number check
         if (addressNum.getText().isEmpty()) { errorBuild.append("Address number cannot be empty!\n"); }
-        else if(isInteger(addressNum.getText())) { errorBuild.append("Address number must be a number!\n"); }
-        // address number check
+        else if(!isInteger(addressNum.getText())) { errorBuild.append("Address number must be a number!\n"); }
+        // address name check
         if (addressStreet.getText().isEmpty()) { errorBuild.append("Address name cannot be empty!\n"); }
-        else if (isLetters(addressStreet.getText())) { errorBuild.append("Address must be only letters!\n"); }
+        else if (!isLetters(addressStreet.getText().replaceAll("[\\.()]", ""))) { errorBuild.append("Address Name must be only letters and (.)s!\n"); }
+        // address city check
+        if (addressCity.getText().isEmpty()) { errorBuild.append("Address city cannot be empty!\n"); }
+        if (!isLetters(addressCity.getText().replaceAll("[\\,()]", ""))) { errorBuild.append("City Name must be only letters and commas!\n"); }
         // phone number check
         if (phoneNumber.getText().isEmpty()) { errorBuild.append("Phone Number cannot be empty!\n"); }
-        if (isInteger(phoneNumber.getText().replaceAll("[\\s\\-()]", ""))) { errorBuild.append("Phone Number must only be numbers and dashes!\n"); }
+        if (!isInteger(phoneNumber.getText().replaceAll("[\\s\\-()]", ""))) { errorBuild.append("Phone Number must only be numbers and dashes!\n"); }
         // customer first name check
-        if (nameFirst.getText().isEmpty()) errorBuild.append("Name cannot be empty!\n");
-        else if (isLetters(nameFirst.getText())) { errorBuild.append("First Name must be only letters!\n"); }
+        if (nameFirst.getText().isEmpty()) errorBuild.append("First Name cannot be empty!\n");
+        else if (!isLetters(nameFirst.getText())) { errorBuild.append("First Name must be only letters!\n"); }
         // customer last name check
-        if (nameLast.getText().isEmpty()) errorBuild.append("Name cannot be empty!\n");
-        else if (isLetters(nameLast.getText())) { errorBuild.append("Last Name must be only letters!\n"); }
+        if (nameLast.getText().isEmpty()) errorBuild.append("Last Name cannot be empty!\n");
+        else if (!isLetters(nameLast.getText())) { errorBuild.append("Last Name must be only letters!\n"); }
         // location check
         if (postalCode.getText().isEmpty()) errorBuild.append("Postal Code cannot be empty!\n");
-        else if (isPostalCode(postalCode.getText())) { errorBuild.append("Postal Code can only be letters and numbers!\n"); }
+        else if (!isPostalCode(postalCode.getText())) { errorBuild.append("Postal Code can only be letters and numbers!\n"); }
 
         // country check
         if (country.getSelectionModel().isEmpty()) { errorBuild.append("You must select a Country!\n"); }

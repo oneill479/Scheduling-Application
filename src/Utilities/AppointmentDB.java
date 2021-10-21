@@ -1,16 +1,11 @@
 package Utilities;
 
-import Model.Customer;
 import Model.User;
 import javafx.collections.ObservableList;
 
 import java.sql.PreparedStatement;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 
 import static Model.User.*;
 
@@ -56,6 +51,9 @@ public class AppointmentDB {
             if (ps.getUpdateCount() > 0) {
                 System.out.println(ps.getUpdateCount() + " row(s) affected!");
             }
+            else {
+                System.out.println("No row(s) affected!");
+            }
 
         }
         catch (Exception e) {
@@ -66,7 +64,7 @@ public class AppointmentDB {
     public static void updateAppointmentDB(int id, String title, String description, String location, String type, Timestamp start, Timestamp end,
                                            int customerId, int contactId) {
 
-        // create INSERT prepared statement
+        // create UPDATE prepared statement
         String preparedStatement = "UPDATE appointments " +
                 "SET Title = ?, " +
                 "Description = ?, " +
@@ -79,7 +77,7 @@ public class AppointmentDB {
                 "Customer_ID = ?, " +
                 "User_ID = ?, " +
                 "Contact_ID = ? " +
-                "WHERE Appointment_ID = ?"; // INSERT statement
+                "WHERE Appointment_ID = ?"; // UPDATE statement
 
         // get current timestamp in utc time
         LocalDateTime currentTime = LocalDateTime.now();
@@ -107,12 +105,13 @@ public class AppointmentDB {
             ps.setInt(11, contactId);
             ps.setInt(12, id);
 
-            System.out.println(ps);
-
             ps.execute();
 
             if (ps.getUpdateCount() > 0) {
                 System.out.println(ps.getUpdateCount() + " row(s) affected!");
+            }
+            else {
+                System.out.println("No row(s) affected!");
             }
 
         }
@@ -136,6 +135,9 @@ public class AppointmentDB {
 
             if (ps.getUpdateCount() > 0) {
                 System.out.println(ps.getUpdateCount() + " row(s) affected!");
+            }
+            else {
+                System.out.println("No row(s) affected!");
             }
 
         }
