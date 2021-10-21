@@ -17,11 +17,14 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Locale;
@@ -90,6 +93,8 @@ public class LoginController implements Initializable {
 
         if (errorStr.isEmpty()) {
 
+            //createLoginFile();
+
             // check if there are any upcoming appointments
             LocalDateTime currentTime = LocalDateTime.now();
             LocalDateTime min = currentTime.plusMinutes(15);
@@ -106,6 +111,8 @@ public class LoginController implements Initializable {
                 }
             }
 
+            writeLoginFile("SUCCESS");
+
             if (appointments.length() == 0) {
                 JOptionPane.showMessageDialog(null, "There are no upcoming appointments!" + appointments, "Appointment Notification", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -118,6 +125,7 @@ public class LoginController implements Initializable {
 
         }
         else {
+            writeLoginFile("FAIL");
             // show error string to user
             JOptionPane.showMessageDialog(null, errorStr);
         }
@@ -188,6 +196,31 @@ public class LoginController implements Initializable {
 
         error = errorBuild.toString();
         return error;
+    }
+
+//    public void createLoginFile() {
+//        File loginFile = new File ("login_activity.txt");
+//            if (loginFile.exists()) {
+//                System.out.println("Login file already exists!");
+//            }
+//            else (loginFile.createNewFile()) {
+//                System.out.println("New login file created!");
+//            }
+//    }
+
+    public void writeLoginFile(String attempt) {
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        try {
+            FileWriter loginFile = new FileWriter("login_activity.txt", true);
+            loginFile.write("User: " + userName.getText());
+            loginFile.write(" Date: " + currentTime.toLocalDate());
+            loginFile.write(" Time: " + currentTime.toLocalTime());
+            loginFile.write("  " + attempt + "\n");
+            loginFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
