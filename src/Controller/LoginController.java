@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.Appointment;
 import Model.User;
 import Utilities.DBQuery;
 import Utilities.JDBC;
@@ -21,10 +22,12 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static Model.Appointment.getAllAppointments;
 import static Model.User.addUser;
 
 public class LoginController implements Initializable {
@@ -87,7 +90,30 @@ public class LoginController implements Initializable {
 
         if (errorStr.isEmpty()) {
 
-            // after save go back to main screen
+            // check if there are any upcoming appointments
+            LocalDateTime currentTime = LocalDateTime.now();
+            LocalDateTime min = currentTime.plusMinutes(15);
+            StringBuilder appointments = new StringBuilder();
+
+            for (Appointment appointment : getAllAppointments()) {
+                if (currentTime.isBefore(appointment.getStartLocal())) {
+                    // check to see if appointment is within 15 minutes
+                    if (appointment.getStartLocal().isBefore(min)) {
+                        appointments.append("ID: " + appointment.getId() + "\nDate: " + appointment.getStartLocal().toLocalDate() +
+                                "\nTime: " + appointment.getStartLocal().toLocalTime() + " - " + appointment.getEndLocal().toLocalTime() + "\n \n");
+                    }
+
+                }
+            }
+
+            if (appointments.length() == 0) {
+                JOptionPane.showMessageDialog(null, "There are no upcoming appointments!" + appointments, "Appointment Notification", JOptionPane.INFORMATION_MESSAGE);
+            }
+            else {
+                JOptionPane.showMessageDialog(null, "You have appointments within 15 minutes!\n \n" + appointments, "Appointment Notification", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            // after login go to main menu
             toMain(actionEvent);
 
         }

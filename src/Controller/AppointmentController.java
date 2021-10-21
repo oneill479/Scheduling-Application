@@ -294,17 +294,23 @@ public class AppointmentController implements Initializable {
             return;
         };
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this appointment?");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel this appointment?");
         Optional<ButtonType> result = alert.showAndWait();
+
+        String aptId = String.valueOf(selectedAppointment.getId());
+        String aptType = selectedAppointment.getType();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             deleteAppointmentDB(selectedAppointment.getId());
             Model.Appointment.deleteAppointment(selectedAppointment);
             appointments.remove(selectedAppointment);
             appointmentTable.setItems(getAllAppointments());
+
+            JOptionPane.showMessageDialog(null, "Appointment successfully cancelled!\n" +
+                    "Appointment ID - " + aptId + "\nAppointment Type - " + aptType, "Customers", JOptionPane.INFORMATION_MESSAGE);
         }
 
-        JOptionPane.showMessageDialog(null, "Appointment successfully deleted!", "Customers", JOptionPane.INFORMATION_MESSAGE);
+
 
         // set selected appointment back to null
         selectedAppointment = null;
@@ -409,7 +415,13 @@ public class AppointmentController implements Initializable {
 
         // look for errors
         int compareErr = 0;
-        if (startDateTime.isBefore(LocalDateTime.now())) { errorBuild.append("Appointment date and time cannot be before current date and time!\n"); compareErr++;}
+        // get day of week
+        String dayOfWeek = startDateTime.getDayOfWeek().toString();
+
+        if (dayOfWeek.equalsIgnoreCase("SATURDAY") || dayOfWeek.equalsIgnoreCase("SUNDAY")) {
+            { errorBuild.append("Appointment day cannot be on a weekend!\n"); compareErr++;}
+        }
+        else if (startDateTime.isBefore(LocalDateTime.now())) { errorBuild.append("Appointment date and time cannot be before current date and time!\n"); compareErr++;}
         else if (startDateTime.isEqual(endDateTime)) { errorBuild.append("Appointment end time must be after start time!\n"); compareErr++;}
         else if (startDateTime.isAfter(endDateTime)) { errorBuild.append("Appointment end time cannot be before start time!\n"); compareErr++;}
 
