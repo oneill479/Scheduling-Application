@@ -21,12 +21,14 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+import static Model.Appointment.getAllAppointments;
 import static Model.Customer.*;
 import static Model.Country.*;
 import static Model.Appointment.*;
 import static Model.FirstLevelDivision.*;
 import static Utilities.AppointmentDB.deleteAppointmentDB;
 import static Utilities.CustomerDB.*;
+import static Utilities.DBQuery.queryAppointments;
 
 public class CustomerController implements Initializable {
 
@@ -114,8 +116,17 @@ public class CustomerController implements Initializable {
             // if country id matches add first level division
             for (FirstLevelDivision division : getAllDivisions()) {
                 if (division.getCountryId() == countryId)
-                    divisionId = division.getId();
                     divisions.add(division.getName());
+            }
+        });
+
+        fieldFLD.setOnAction(e -> {
+            // if country id matches add first level division
+            for (FirstLevelDivision division : getAllDivisions()) {
+                if (division.getName() == (String) fieldFLD.getSelectionModel().getSelectedItem()) {
+                    divisionId = division.getId();
+                    System.out.println(divisionId);
+                }
             }
         });
 
@@ -296,21 +307,15 @@ public class CustomerController implements Initializable {
 
                 if (appointmentResult.isPresent() && appointmentResult.get() == ButtonType.YES) {
 
-                    ObservableList<Appointment> appointmentList = getAllAppointments();
-
-                    for (Appointment appointment : appointmentList) {
-                        if (selectedCustomer.getId() == appointment.getCustomerId()) {
-                            deleteAppointmentDB(appointment.getId());
-                            deleteAppointment(appointment);
-                        }
-                        if (appointmentList.size() == 0) { break; }
-                    }
-
                     // delete customer
                     deleteCustomerDB(selectedCustomer.getId());
                     deleteCustomer(selectedCustomer);
                     customers.remove(selectedCustomer);
                     customerTable.setItems(getAllCustomers());
+
+                    // clear appointmetns and query again to see updated appointments after user is deleted
+                    deleteAllAppointments();
+                    queryAppointments();
 
                     JOptionPane.showMessageDialog(null, "Customer successfully deleted!", "Customers", JOptionPane.INFORMATION_MESSAGE);
 

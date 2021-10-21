@@ -253,6 +253,13 @@ public class Appointment {
     }
 
     /**
+     * Clears all appointments
+     */
+    public static void deleteAllAppointments() {
+        allAppointments.clear();
+    }
+
+    /**
      * This method updates an appointment
      * @param index the index of the appointment
      * @param updatedAppointment the appointment that will be updated
