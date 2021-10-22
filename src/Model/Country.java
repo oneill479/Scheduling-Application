@@ -1,5 +1,14 @@
 package Model;
 
+/**
+ * Class Country.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -13,6 +22,7 @@ public class Country {
     private int id;
     private String name;
 
+    // Constructor
     public Country(int id, String name) {
         this.id = id;
         this.name = name;

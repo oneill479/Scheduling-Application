@@ -1,5 +1,14 @@
 package Utilities;
 
+/**
+ * Class DBQuery.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.*;
 import javafx.collections.ObservableList;
 
@@ -15,20 +24,32 @@ public class DBQuery {
 
     private static PreparedStatement statement;
 
+    /**
+     * Sets a prepared statement
+     * @param connection
+     * @param sqlStatement
+     * @throws SQLException
+     */
     public static void setPreparedStatement(Connection connection, String sqlStatement) throws SQLException
     {
         statement = connection.prepareStatement(sqlStatement);
     }
 
+    /**
+     * Gets prepared statement
+     * @return prepared statement
+     */
     public static PreparedStatement getPreparedStatement()
     {
         return statement;
     }
 
 
-
     // QUERIES //
 
+    /**
+     * Gets countries from database
+     */
     public static void queryCountries() {
 
         // create SELECT prepared statement
@@ -57,6 +78,9 @@ public class DBQuery {
         }
     }
 
+    /**
+     * Gets First Level Divisions from database
+     */
     public static void queryFirstLevelDivisions() {
 
         // create SELECT prepared statement
@@ -86,6 +110,9 @@ public class DBQuery {
         }
     }
 
+    /**
+     * Gets customers from database
+     */
     public static void queryCustomers() {
 
         // create SELECT prepared statement
@@ -140,6 +167,9 @@ public class DBQuery {
         }
     }
 
+    /**
+     * Gets Contacts from database
+     */
     public static void queryContacts() {
 
         // create SELECT prepared statement
@@ -169,6 +199,9 @@ public class DBQuery {
         }
     }
 
+    /**
+     * Gets appointments from database
+     */
     public static void queryAppointments() {
 
         // create SELECT prepared statement
@@ -231,22 +264,5 @@ public class DBQuery {
             System.out.println(e.getMessage());
         }
     }
-
-    //private static Statement statement;
-
-    // Create statement object
-    /*
-    public static void setStatement(Connection connection) throws SQLException
-    {
-        statement = connection.createStatement();
-    }
-
-    // Return statement object
-    public static Statement getStatement()
-    {
-        return statement;
-    }
-     */
-
 
 }

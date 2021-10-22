@@ -1,5 +1,14 @@
 package Controller;
 
+/**
+ * Class LoginController.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.Appointment;
 import Model.User;
 import Utilities.DBQuery;
@@ -17,14 +26,12 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import javax.swing.*;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Locale;
@@ -88,6 +95,12 @@ public class LoginController implements Initializable {
         stage.show();
     }
 
+    /**
+     * Logs user in
+     * @param actionEvent login button clicked
+     * @throws IOException
+     * @throws SQLException
+     */
     public void login(ActionEvent actionEvent) throws IOException, SQLException {
         String errorStr = checkUser(userName, userPassword);
 
@@ -132,6 +145,13 @@ public class LoginController implements Initializable {
 
     }
 
+    /**
+     * Checks validity of username and password
+     * @param userName user name
+     * @param userPassword user password
+     * @return a string of errors
+     * @throws SQLException
+     */
     public static String checkUser(TextField userName, PasswordField userPassword) throws SQLException {
         StringBuilder errorBuild = new StringBuilder();
         int emptyError = 0;
@@ -198,6 +218,10 @@ public class LoginController implements Initializable {
         return error;
     }
 
+    /**
+     * writes to login activity file
+     * @param attempt success of the login attempt (success or failure)
+     */
     public void writeLoginFile(String attempt) {
         LocalDateTime currentTime = LocalDateTime.now();
 

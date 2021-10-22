@@ -1,5 +1,14 @@
 package Utilities;
 
+/**
+ * Class AppointmentDB.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.User;
 import javafx.collections.ObservableList;
 
@@ -11,6 +20,18 @@ import static Model.User.*;
 
 public class AppointmentDB {
 
+    /**
+     * Inserts an appointment into database
+     * @param id
+     * @param title
+     * @param description
+     * @param location
+     * @param type
+     * @param start
+     * @param end
+     * @param customerId
+     * @param contactId
+     */
     public static void insertAppointmentDB(int id, String title, String description, String location, String type, Timestamp start, Timestamp end,
                                            int customerId, int contactId) {
 
@@ -61,6 +82,18 @@ public class AppointmentDB {
         }
     }
 
+    /**
+     * Updates an apointment in database
+     * @param id
+     * @param title
+     * @param description
+     * @param location
+     * @param type
+     * @param start
+     * @param end
+     * @param customerId
+     * @param contactId
+     */
     public static void updateAppointmentDB(int id, String title, String description, String location, String type, Timestamp start, Timestamp end,
                                            int customerId, int contactId) {
 
@@ -120,6 +153,10 @@ public class AppointmentDB {
         }
     }
 
+    /**
+     * Deletes an appointment in database
+     * @param id
+     */
     public static void deleteAppointmentDB(int id) {
 
         // create DELETE prepared statement

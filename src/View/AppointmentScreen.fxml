@@ -102,15 +102,18 @@
       </columns>
    </TableView>
 
-   <RadioButton fx:id="weekRadioButton" layoutX="488.0" layoutY="358.0" mnemonicParsing="false" onAction="#weekView" text="This Week">
+   <RadioButton fx:id="weekRadioButton" layoutX="488.0" layoutY="358.0" mnemonicParsing="false" onAction="#weekView" text="Within Week">
+      <font>
+         <Font name="System Italic" size="12.0" />
+      </font>
+      <toggleGroup>
+         <ToggleGroup fx:id="radioGroup" />
+      </toggleGroup></RadioButton>
+   <RadioButton fx:id="monthRadioButton" layoutX="592.0" layoutY="358.0" mnemonicParsing="false" onAction="#monthView" text="Within A Month" toggleGroup="$radioGroup">
       <font>
          <Font name="System Italic" size="12.0" />
       </font></RadioButton>
-   <RadioButton fx:id="monthRadioButton" layoutX="592.0" layoutY="358.0" mnemonicParsing="false" onAction="#monthView" text="This Month">
-      <font>
-         <Font name="System Italic" size="12.0" />
-      </font></RadioButton>
-   <RadioButton fx:id="allRadioButton" layoutX="395.0" layoutY="358.0" mnemonicParsing="false" onAction="#allView" selected="true" text="All">
+   <RadioButton fx:id="allRadioButton" layoutX="410.0" layoutY="358.0" mnemonicParsing="false" onAction="#allView" selected="true" text="All" toggleGroup="$radioGroup">
       <font>
          <Font name="System Italic" size="12.0" />
       </font>

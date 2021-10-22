@@ -1,5 +1,14 @@
 package Model;
 
+/**
+ * Class FirstLevelDivision.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -13,6 +22,7 @@ public class FirstLevelDivision {
     private int id, countryId;
     private String name;
 
+    // Constructor
     public FirstLevelDivision(int id, String name, int countryId) {
         this.id = id;
         this.name = name;

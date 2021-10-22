@@ -1,5 +1,14 @@
 package Controller;
 
+/**
+ * Class MainMenuController.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,6 +27,11 @@ public class MainMenuController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
+    /**
+     * To customers screen
+     * @param actionEvent customers button clicked
+     * @throws IOException
+     */
     public void toCustomers(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("../View/CustomerScreen.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -30,6 +44,11 @@ public class MainMenuController implements Initializable {
         stage.show();
     }
 
+    /**
+     * To appointments screen
+     * @param actionEvent appointments button clicked
+     * @throws IOException
+     */
     public void toAppointments(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("../View/AppointmentScreen.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -41,6 +60,11 @@ public class MainMenuController implements Initializable {
         stage.show();
     }
 
+    /**
+     * To reports screen
+     * @param actionEvent reports button clicked
+     * @throws IOException
+     */
     public void toReports(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("../View/ReportScreen.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

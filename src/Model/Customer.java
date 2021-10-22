@@ -4,18 +4,13 @@ package Model;
  * Class Customer.java
  */
 
-import Utilities.DBQuery;
-import Utilities.JDBC;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 /**
  *
  * @author Caleb O'Neill
  */
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class Customer {
 
@@ -28,7 +23,7 @@ public class Customer {
     private String name, address, postalCode, phoneNumber;
     private String country, firstLevelDivision;
 
-    // constructor
+    // Constructor
     public Customer(int id, String name, String address, String postalCode, String phoneNumber, String country, String firstLevelDivision) {
         this.id = id;
         this.name = name;

@@ -1,5 +1,14 @@
 package Model;
 
+/**
+ * Class User.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -11,6 +20,7 @@ public class User {
     private int userId;
     private String userName;
 
+    // Constructor
     public User(int userId, String userName) {
         this.userName = userName;
         this.userId = userId;

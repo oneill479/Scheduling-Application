@@ -1,5 +1,14 @@
 package Controller;
 
+/**
+ * Class ReportController.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.Appointment;
 import Model.Contact;
 import Model.Customer;
@@ -52,6 +61,9 @@ public class ReportController implements Initializable {
     private ObservableList<String> months = FXCollections.observableArrayList();
 
 
+    /**
+     * Initializes reports screen with all of the data
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 

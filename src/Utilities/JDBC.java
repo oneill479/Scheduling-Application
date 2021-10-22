@@ -1,5 +1,9 @@
 package Utilities;
 
+/**
+ * Class JDBC.java
+ */
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -15,6 +19,9 @@ public abstract class JDBC {
     private static String password = "Passw0rd!"; // Password
     public static Connection connection;  // Connection Interface
 
+    /**
+     * Opens connection to database
+     */
     public static void openConnection()
     {
         try {
@@ -28,6 +35,9 @@ public abstract class JDBC {
         }
     }
 
+    /**
+     * Closes connection to database
+     */
     public static void closeConnection()
     {
         try {

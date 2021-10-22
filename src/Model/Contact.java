@@ -1,5 +1,14 @@
 package Model;
 
+/**
+ * Class Contact.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -13,6 +22,7 @@ public class Contact {
     private int id;
     private String name, email;
 
+    // Constructor
     public Contact(int id, String name, String email) {
         this.id = id;
         this.name = name;

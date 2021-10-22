@@ -1,5 +1,14 @@
 package Controller;
 
+/**
+ * Class CustomerController.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -149,6 +158,12 @@ public class CustomerController implements Initializable {
         return randomId;
     }
 
+    /**
+     * Adds or updates a customer
+     * @param actionEvent add or update customer button clicked
+     * @throws IOException
+     * @throws ParseException
+     */
     public void addCustomer(ActionEvent actionEvent) throws IOException, ParseException {
         StringBuilder error = new StringBuilder();
         String textError = checkInputs(fieldAddressNum, fieldAddressStreet, fieldAddressCity, fieldPhone, fieldNameFirst, fieldNameLast,
@@ -196,6 +211,10 @@ public class CustomerController implements Initializable {
 
     }
 
+    /**
+     * Fills input boxes with selected customer to update
+     * @param actionEvent update customer button clicked
+     */
     public void updateSelectedCustomer(ActionEvent actionEvent) {
 
         selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
@@ -239,6 +258,11 @@ public class CustomerController implements Initializable {
 
     }
 
+    /**
+     * Cancels the update
+     * @param actionEvent cancel button clicked
+     * @throws IOException
+     */
     public void cancelUpdate(ActionEvent actionEvent) throws IOException {
         refreshPage(actionEvent);
     }
@@ -259,6 +283,10 @@ public class CustomerController implements Initializable {
         stage.show();
     }
 
+    /**
+     * Deletes selected customer
+     * @param actionEvent delete customer button clicked
+     */
     public void deleteSelectedCustomer(ActionEvent actionEvent) {
 
         selectedCustomer = (Customer) customerTable.getSelectionModel().getSelectedItem();
@@ -329,6 +357,11 @@ public class CustomerController implements Initializable {
 
     }
 
+    /**
+     * Refreshes current page
+     * @param actionEvent takes in action event from another function
+     * @throws IOException
+     */
     public void refreshPage (ActionEvent actionEvent) throws IOException {
         // reset customer screen
         Parent root = FXMLLoader.load(getClass().getResource("../View/CustomerScreen.fxml"));
@@ -394,6 +427,19 @@ public class CustomerController implements Initializable {
 
     }
 
+    /**
+     * Checks the input text for errors
+     * @param addressNum address street number
+     * @param addressStreet address street name
+     * @param addressCity address city name
+     * @param phoneNumber phone number
+     * @param nameFirst first name
+     * @param nameLast last name
+     * @param postalCode postal code
+     * @param country country
+     * @param division first level division
+     * @return a string with any errors
+     */
     public static String checkInputs(TextField addressNum, TextField addressStreet, TextField addressCity, TextField phoneNumber, TextField nameFirst, TextField nameLast, TextField postalCode, ComboBox country, ComboBox division) {
         StringBuilder errorBuild = new StringBuilder();
         String error;

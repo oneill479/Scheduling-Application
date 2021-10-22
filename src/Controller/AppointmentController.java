@@ -1,9 +1,19 @@
 package Controller;
 
+/**
+ * Class AppointmentController.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.*;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -50,6 +60,7 @@ public class AppointmentController implements Initializable {
     public RadioButton weekRadioButton;
     public RadioButton monthRadioButton;
     public RadioButton allRadioButton;
+    public ToggleGroup radioGroup;
 
     Appointment selectedAppointment;
 
@@ -59,7 +70,6 @@ public class AppointmentController implements Initializable {
     private String sHr, sMin, eHr, eMin;
     private Timestamp startTimestamp, endTimestamp;
     private boolean update = false;
-    private Date updateDate;
 
     public TableView appointmentTable;
     public TableColumn appointmentId;
@@ -76,6 +86,8 @@ public class AppointmentController implements Initializable {
     private ObservableList<Appointment> appointments = FXCollections.observableArrayList();
     private ObservableList<String> contacts = FXCollections.observableArrayList();
     private ObservableList<String> customers = FXCollections.observableArrayList();
+    private FilteredList<Appointment> weekFilter = new FilteredList<>(appointments);
+    private FilteredList<Appointment> monthFilter = new FilteredList<>(appointments);
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -196,6 +208,12 @@ public class AppointmentController implements Initializable {
         stage.show();
     }
 
+    /**
+     * Adds an appointment
+     * @param actionEvent add appointment or update appointment button clicked
+     * @throws IOException
+     * @throws ParseException
+     */
     public void addAppointment(ActionEvent actionEvent) throws IOException, ParseException {
         StringBuilder error = new StringBuilder();
         String textError = checkTextInputs(fieldContact, fieldTitle, fieldCustomer, fieldDescription, fieldLocation, fieldType);
@@ -213,6 +231,7 @@ public class AppointmentController implements Initializable {
             description = fieldDescription.getText();
             location = fieldLocation.getText();
             type = fieldType.getText();
+            allRadioButton.setSelected(true);
 
             if (update) {
                 Appointment updateAppointment = new Appointment(Integer.parseInt(fieldId.getText()), title, description, location, contactName, type, startTimestamp, endTimestamp, customerID, userId, customerName);
@@ -247,6 +266,10 @@ public class AppointmentController implements Initializable {
 
     }
 
+    /**
+     * Fills input fields with selected appointment
+     * @param actionEvent update button clicked
+     */
     public void updateSelectedAppointment(ActionEvent actionEvent) {
 
         selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
@@ -286,6 +309,10 @@ public class AppointmentController implements Initializable {
 
     }
 
+    /**
+     * Deletes an appoinment
+     * @param actionEvent delete button clicked
+     */
     public void deleteAppointment(ActionEvent actionEvent) {
 
         selectedAppointment = (Appointment) appointmentTable.getSelectionModel().getSelectedItem();
@@ -308,32 +335,72 @@ public class AppointmentController implements Initializable {
             Model.Appointment.deleteAppointment(selectedAppointment);
             appointments.remove(selectedAppointment);
             appointmentTable.setItems(getAllAppointments());
-
+            allRadioButton.setSelected(true);
             JOptionPane.showMessageDialog(null, "Appointment successfully cancelled!\n" +
                     "Appointment ID - " + aptId + "\nAppointment Type - " + aptType, "Customers", JOptionPane.INFORMATION_MESSAGE);
         }
-
-
-
         // set selected appointment back to null
         selectedAppointment = null;
     }
 
+    /**
+     * Sets to all table view
+     * @param actionEvent all radio button clicked
+     */
     public void allView(ActionEvent actionEvent) {
-
+        appointmentTable.setItems(appointments);
     }
 
+    /**
+     * USES LAMBDA EXPRESSION - sets to week view
+     * @param actionEvent week radio button clicked
+     */
     public void weekView(ActionEvent actionEvent) {
-        //appointmentStart.setCellValueFactory(cellData -> cellData.getValue());
+        appointmentTable.setItems(weekFilter);
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime week = currentTime.plusWeeks(1);
+        weekFilter.setPredicate(
+                appointment -> {
+                    if (appointment.getStartLocal().isBefore(week) && appointment.getStartLocal().isAfter(currentTime))
+                        return true;
+                    else
+                        return false;
+                }
+        );
     }
 
+    /**
+     * USES LAMBDA EXPRESSION - sets to month view
+     * @param actionEvent month radio button clicked
+     */
     public void monthView(ActionEvent actionEvent) {
+        appointmentTable.setItems(monthFilter);
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime month = currentTime.plusMonths(1);
+        monthFilter.setPredicate(
+                appointment -> {
+                    if (appointment.getStartLocal().isBefore(month) && appointment.getStartLocal().isAfter(currentTime))
+                        return true;
+                    else
+                        return false;
+                }
+        );
     }
 
+    /**
+     * Cancels the update
+     * @param actionEvent cancel update button clicked
+     * @throws IOException throws error for refreshing page
+     */
     public void cancelUpdate(ActionEvent actionEvent) throws IOException {
         refreshPage(actionEvent);
     }
 
+    /**
+     * Refreshes the current page
+     * @param actionEvent takes in action click event from another function
+     * @throws IOException throws error for refreshing page
+     */
     public void refreshPage (ActionEvent actionEvent) throws IOException {
         // reset appointment screen
         Parent root = FXMLLoader.load(getClass().getResource("../View/AppointmentScreen.fxml"));
@@ -346,6 +413,16 @@ public class AppointmentController implements Initializable {
         stage.show();
     }
 
+    /**
+     * Checks for text input errors
+     * @param contact contact text field
+     * @param title title text field
+     * @param customer customer text field
+     * @param description description text field
+     * @param location location text field
+     * @param type type text field
+     * @return a string with whatever errors occurred
+     */
     public static String checkTextInputs(ComboBox contact, TextField title, ComboBox customer, TextField description, TextField location, TextField type) {
         StringBuilder errorBuild = new StringBuilder();
         String error;
@@ -368,6 +445,15 @@ public class AppointmentController implements Initializable {
 
     }
 
+    /**
+     * Checks for errors in date and time
+     * @param startHour start hour spinner
+     * @param startMinute start minute spinner
+     * @param endHour end hour spinner
+     * @param endMinute end minute spinner
+     * @return a string with any errors in checking validity of date and time
+     * @throws ParseException
+     */
     public String checkTimeInputs(String startHour, String startMinute, String endHour,
                                          String endMinute) throws ParseException {
 

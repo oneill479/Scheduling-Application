@@ -1,5 +1,14 @@
 package Utilities;
 
+/**
+ * Class CustomerDB.java
+ */
+
+/**
+ *
+ * @author Caleb O'Neill
+ */
+
 import Model.User;
 import javafx.collections.ObservableList;
 
@@ -11,6 +20,15 @@ import static Model.User.getCurrentUser;
 
 public class CustomerDB {
 
+    /**
+     * Inserts a customer into database
+     * @param id
+     * @param name
+     * @param address
+     * @param postal
+     * @param phone
+     * @param division
+     */
     public static void insertCustomer(int id, String name, String address, String postal, String phone, int division) {
 
         // create INSERT prepared statement
@@ -55,6 +73,15 @@ public class CustomerDB {
         }
     }
 
+    /**
+     * Updates a customer in database
+     * @param id
+     * @param name
+     * @param address
+     * @param postal
+     * @param phone
+     * @param division
+     */
     public static void updateCustomerDB(int id, String name, String address, String postal, String phone, int division) {
 
         // create UPDATE prepared statement
