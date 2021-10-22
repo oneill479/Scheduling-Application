@@ -47,6 +47,9 @@ public class AppointmentController implements Initializable {
     public Label contactIdLabel;
     public Button addAppointmentButton;
     public Button cancelButton;
+    public RadioButton weekRadioButton;
+    public RadioButton monthRadioButton;
+    public RadioButton allRadioButton;
 
     Appointment selectedAppointment;
 
@@ -316,7 +319,12 @@ public class AppointmentController implements Initializable {
         selectedAppointment = null;
     }
 
+    public void allView(ActionEvent actionEvent) {
+
+    }
+
     public void weekView(ActionEvent actionEvent) {
+        //appointmentStart.setCellValueFactory(cellData -> cellData.getValue());
     }
 
     public void monthView(ActionEvent actionEvent) {

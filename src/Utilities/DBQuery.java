@@ -20,7 +20,6 @@ public class DBQuery {
         statement = connection.prepareStatement(sqlStatement);
     }
 
-
     public static PreparedStatement getPreparedStatement()
     {
         return statement;

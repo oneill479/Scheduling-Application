@@ -2,7 +2,6 @@ package Controller;
 
 import Model.Appointment;
 import Model.Contact;
-import Model.Country;
 import Model.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,7 +12,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.*;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
@@ -23,7 +25,6 @@ import java.util.ResourceBundle;
 
 import static Model.Appointment.getAllAppointments;
 import static Model.Contact.getAllContacts;
-import static Model.Country.getAllCountries;
 import static Model.Customer.getAllCustomers;
 
 public class ReportController implements Initializable {
@@ -145,19 +146,14 @@ public class ReportController implements Initializable {
 
         // fill pie chart
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-                new PieChart.Data("USA", usa),
-                new PieChart.Data("UK", uk),
-                new PieChart.Data("Canada", canada)
+                new PieChart.Data("USA-"+usa, usa),
+                new PieChart.Data("UK-"+uk, uk),
+                new PieChart.Data("CANADA-"+canada, canada)
         );
 
-        System.out.println(uk);
-
-        final Label usaData = new Label(String.valueOf(usa));
-        final Label ukData = new Label(String.valueOf(uk));
-        final Label canadaData = new Label(String.valueOf(canada));
-
+        countryPieChart.setTitle("Customers By Country");
         countryPieChart.setData(pieChartData);
-        countryPieChart.
+        countryPieChart.setStyle("-fx-font-size: 8px; -fx-font-weight: bold;");
         countryPieChart.setClockwise(true);
         countryPieChart.setLabelLineLength(5);
         countryPieChart.setLabelsVisible(true);
