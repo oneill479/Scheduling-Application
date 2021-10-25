@@ -67,6 +67,8 @@ public class AppointmentDB {
             ps.setInt(13, userId);
             ps.setInt(14, contactId);
 
+            System.out.println(ps);
+
             ps.execute();
 
             if (ps.getUpdateCount() > 0) {

@@ -113,25 +113,28 @@ public class AppointmentController implements Initializable {
 
         ObservableList<Appointment> appointmentList = getAllAppointments();
 
-        for (Appointment appointment : appointmentList) {
-            appointments.add(appointment);
-        }
+        /**
+         * Lambda expression to add appointments to list
+         */
+        appointmentList.forEach((appointment -> appointments.add(appointment)));
 
         // populate contact field
         fieldContact.setItems(contacts);
         ObservableList<Contact> contactsList = getAllContacts();
 
-        for (Contact contact : contactsList) {
-            contacts.add(contact.getName());
-        }
+        /**
+         * Lambda expression to add contacts to contact list
+         */
+        contactsList.forEach(contact -> contacts.add(contact.getName()));
 
         // populate customer field
         fieldCustomer.setItems(customers);
         ObservableList<Customer> customerList = getAllCustomers();
 
-        for (Customer customer : customerList) {
-            customers.add(customer.getName());
-        }
+        /**
+        * Lambda expression to add customers to customer list
+        */
+        customerList.forEach(customer -> customers.add(customer.getName()));
 
         fieldContact.setOnAction(e -> {
 
